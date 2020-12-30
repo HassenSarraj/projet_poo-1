@@ -6,15 +6,13 @@ package fr.ubx.poo.model.go.character;
 
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Position;
-import fr.ubx.poo.game.WorldEntity;
 import fr.ubx.poo.model.Movable;
-import fr.ubx.poo.model.decor.Box;
-import fr.ubx.poo.model.decor.Decor;
-import fr.ubx.poo.model.decor.Stone;
-import fr.ubx.poo.model.decor.Tree;
+import fr.ubx.poo.model.decor.*;
+import fr.ubx.poo.model.go.Bomb.Bomb;
 import fr.ubx.poo.model.go.GameObject;
 import fr.ubx.poo.game.Game;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Player extends GameObject implements Movable {
@@ -27,6 +25,7 @@ public class Player extends GameObject implements Movable {
     private int numberofBombs = 1 ;
     private int Bombrange = 1;
     private boolean winner;
+
 
     public Player(Game game, Position position) {
         super(game, position);
@@ -49,10 +48,19 @@ public class Player extends GameObject implements Movable {
         moveRequested = true;
     }
 
+    public void requestBomb(long now) {
+        Bomb bomb = new Bomb(game,this.getPosition(),now,Bombrange);
+        game.getBombs().add(bomb) ;
+    }
+
     @Override
     public boolean canMove(Direction direction) {
         Position nextpos = direction.nextPosition(getPosition());
         if (nextpos.inside(game.getWorld().dimension)) {
+            for (Bomb b : game.getBombs()) {
+                if (b.getPosition().equals(nextpos))
+                    return false ;
+            }
             Decor decor = game.getWorld().get(nextpos) ;
             if ( decor == null)
                 return true ;
@@ -113,7 +121,7 @@ public class Player extends GameObject implements Movable {
                 doMove(direction);
             }
         }
-        moveRequested = false;
+        moveRequested = false ;
     }
 
     public boolean isWinner() {

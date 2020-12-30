@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import fr.ubx.poo.model.go.Bomb.Bomb;
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.model.go.character.Player;
 
@@ -18,6 +19,7 @@ public class Game {
     private final World world;
     private final Player player;
     private final List<Monster> monsters = new ArrayList<>() ;
+    private List<Bomb> bombs = new ArrayList<>() ;
     private final String worldPath;
     public int initPlayerLives;
     public String initWorldPrefix;
@@ -125,4 +127,6 @@ public class Game {
     public List<Monster> getMonsters() {
         return this.monsters;
     }
+
+    public List<Bomb> getBombs() { return bombs; }
 }

@@ -5,8 +5,12 @@
 package fr.ubx.poo.engine;
 
 import fr.ubx.poo.game.Direction;
+import fr.ubx.poo.game.Position;
+import fr.ubx.poo.model.go.Bomb.Bomb;
+import fr.ubx.poo.model.go.Bomb.State;
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.view.sprite.Sprite;
+import fr.ubx.poo.view.sprite.SpriteBomb;
 import fr.ubx.poo.view.sprite.SpriteFactory;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.model.go.character.Player;
@@ -23,6 +27,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -32,7 +37,7 @@ public final class GameEngine {
     private final String windowTitle;
     private final Game game;
     private final Player player;
-    private List<Monster> monsters = new ArrayList<>() ;
+    private List<Monster> monsters;
     private final List<Sprite> sprites = new ArrayList<>();
     private StatusBar statusBar;
     private Pane layer;
@@ -40,6 +45,7 @@ public final class GameEngine {
     private Stage stage;
     private Sprite spritePlayer;
     private final List<Sprite> spriteMonsters = new ArrayList<>();
+    private final List<SpriteBomb> spriteBombs = new ArrayList<>();
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
@@ -111,6 +117,9 @@ public final class GameEngine {
         if (input.isMoveUp()) {
             player.requestMove(Direction.N);
         }
+        if (input.isBomb()) {
+            player.requestBomb(now);
+        }
         input.clear();
     }
 
@@ -136,6 +145,16 @@ public final class GameEngine {
 
     private void update(long now) {
         player.update(now);
+        List<Bomb> to_remove = new ArrayList<>();
+        game.getBombs().forEach(b -> {
+            b.update(now);
+            if (b.isBomb_is_set())
+                spriteBombs.add(SpriteFactory.createBomb(layer,b));
+            else {
+                to_remove.add(b);
+            }
+        });
+        game.getBombs().removeAll(to_remove);
         if ( game.getWorld().isChanged() ) {
             sprites.forEach(Sprite::remove);
             sprites.clear();
@@ -155,6 +174,7 @@ public final class GameEngine {
     private void render() {
         sprites.forEach(Sprite::render);
         spriteMonsters.forEach(Sprite::render);
+        spriteBombs.forEach(SpriteBomb::render);
         // last rendering to have player in the foreground
         spritePlayer.render();
     }
