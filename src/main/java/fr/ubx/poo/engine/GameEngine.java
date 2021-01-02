@@ -5,11 +5,11 @@
 package fr.ubx.poo.engine;
 
 import fr.ubx.poo.game.Direction;
+import fr.ubx.poo.game.Game;
 import fr.ubx.poo.model.go.character.Monster;
+import fr.ubx.poo.model.go.character.Player;
 import fr.ubx.poo.view.sprite.Sprite;
 import fr.ubx.poo.view.sprite.SpriteFactory;
-import fr.ubx.poo.game.Game;
-import fr.ubx.poo.model.go.character.Player;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -32,7 +32,7 @@ public final class GameEngine {
     private final String windowTitle;
     private final Game game;
     private final Player player;
-    private List<Monster> monsters = new ArrayList<>() ;
+    private List<Monster> monsters;
     private final List<Sprite> sprites = new ArrayList<>();
     private StatusBar statusBar;
     private Pane layer;
@@ -64,7 +64,7 @@ public final class GameEngine {
 
         stage.setTitle(windowTitle);
         stage.setScene(scene);
-        stage.setResizable(false);
+        stage.setResizable(true);
         stage.show();
 
         input = new Input(scene);
@@ -81,23 +81,25 @@ public final class GameEngine {
         gameLoop = new AnimationTimer() {
             public void handle(long now) {
                 // Check keyboard actions
-                processInput(now);
+                processInput();
 
                 // Do actions
                 update(now);
 
                 // Graphic update
                 render();
-                statusBar.update(game);
             }
         };
     }
 
-    private void processInput(long now) {
+    private void processInput() {
         if (input.isExit()) {
             gameLoop.stop();
             Platform.exit();
             System.exit(0);
+        }
+        if (this.input.isKey()) {
+            this.player.action(this.player, this.game, this.player.getPosition());
         }
         if (input.isMoveDown()) {
             player.requestMove(Direction.S);
@@ -128,21 +130,26 @@ public final class GameEngine {
         stage.show();
         new AnimationTimer() {
             public void handle(long now) {
-                processInput(now);
+                processInput();
             }
         }.start();
     }
 
-
     private void update(long now) {
         player.update(now);
         if ( game.getWorld().isChanged() ) {
+            if (this.game.update()) {
+                this.player.setPosition(this.game.getPlayer().getPosition());
+                this.monsters = this.game.getMonsters();
+                this.initialize(this.stage, this.game);
+                this.statusBar.setGameLevel(this.game.getLevel());
+            }
             sprites.forEach(Sprite::remove);
             sprites.clear();
             game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
             game.getWorld().setChanged(false);
         }
-        if (player.isAlive() == false) {
+        if (!player.isAlive()) {
             gameLoop.stop();
             showMessage("Perdu!", Color.RED);
         }
@@ -150,6 +157,7 @@ public final class GameEngine {
             gameLoop.stop();
             showMessage("Gagné", Color.BLUE);
         }
+        this.statusBar.update(game);
     }
 
     private void render() {
