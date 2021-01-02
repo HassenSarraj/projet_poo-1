@@ -20,7 +20,7 @@ public class Player extends GameObject implements Movable {
     private boolean alive = true;
     Direction direction;
     private boolean moveRequested = false;
-    private int lives = 1;
+    private int lives;
     private int numberOfKeys = 0 ;
     private int numberofBombs = 1 ;
     private int Bombrange = 1;
@@ -51,6 +51,17 @@ public class Player extends GameObject implements Movable {
     public void requestBomb(long now) {
         Bomb bomb = new Bomb(game,this.getPosition(),now,Bombrange);
         game.getBombs().add(bomb) ;
+    }
+
+    @Override
+    public void action(Player Player, Game game, Position pos) {
+        Decor decor = game.getWorld().get(Player.getDirection().nextPosition(pos));
+        if ((decor instanceof DoorNextClosed)
+                && (Player.getNumberOfKeys() > 0)) {
+            game.getWorld().set(Player.getDirection().nextPosition(pos), new DoorNextOpened());
+            Player.setNumberOfKeys(Player.getNumberOfKeys() - 1);
+            game.getWorld().setChanged(true);
+        }
     }
 
     @Override
@@ -133,6 +144,7 @@ public class Player extends GameObject implements Movable {
             alive = false ;
         return alive;
     }
+
     public void setLives(int lives) {
         this.lives = lives;
     }
@@ -144,7 +156,6 @@ public class Player extends GameObject implements Movable {
     public void setNumberOfKeys(int numberOfKeys) {
         this.numberOfKeys = numberOfKeys;
     }
-
 
     public int getNumberofBombs() {
         return numberofBombs;
@@ -165,5 +176,4 @@ public class Player extends GameObject implements Movable {
     public void setWinner(boolean winner) {
         this.winner = winner;
     }
-
 }
