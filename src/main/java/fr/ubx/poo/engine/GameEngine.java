@@ -154,6 +154,7 @@ public final class GameEngine {
             }
         });
         game.getBombs().removeAll(to_remove);
+        this.monsters.forEach(monster -> monster.update(now));
         if ( game.getWorld().isChanged() ) {
             if (this.game.update()) {
                 this.player.setPosition(this.game.getPlayer().getPosition());

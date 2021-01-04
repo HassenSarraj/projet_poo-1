@@ -22,8 +22,8 @@ public class Game {
 
     private final List<World> worldList = new ArrayList<>();
     private final Player player;
-    private final List<Monster> monsters = new ArrayList<>() ;
     private List<Bomb> bombs = new ArrayList<>() ;
+    private final List<List<Monster>> monsterList = new ArrayList<>();
     private int level = 0;
     private boolean[] levelChanged = {false, false};
     public int initPlayerLives;
@@ -33,13 +33,14 @@ public class Game {
     public Game(String worldPath) {
         Position positionPlayer;
         loadConfig(worldPath);
-        for (int i = 0; i < this.initWorldLevels; i++) {
-            this.worldList.add(new World(this.loadLevel(i + 1, worldPath)));
-        }
         try {
-            for (Position p : worldList.get(this.level).findMonsters()) {
-                Monster monster = new Monster(this, p);
-                monsters.add(monster);
+            for (int i = 0; i < this.initWorldLevels; i++) {
+                this.worldList.add(new World(this.loadLevel(i + 1, worldPath)));
+            }
+            for (int i = 0; i < this.initWorldLevels; i++) {
+                List<Monster> monsters = new ArrayList<>();
+                this.worldList.get(i).findMonsters().forEach(position -> monsters.add(new Monster(this, position)));
+                this.monsterList.add(monsters);
             }
             positionPlayer = worldList.get(this.level).findPlayer();
             player = new Player(this, positionPlayer);
@@ -138,7 +139,7 @@ public class Game {
     }
 
     public World getWorld() {
-        return worldList.get(this.level);
+        return this.worldList.get(this.level);
     }
 
     public Player getPlayer() {
@@ -146,7 +147,7 @@ public class Game {
     }
 
     public List<Monster> getMonsters() {
-        return this.monsters;
+        return this.monsterList.get(this.level);
     }
 
     public List<Bomb> getBombs() {
@@ -193,10 +194,6 @@ public class Game {
                 }
                 default -> throw new Exception("Wrong mode !");
             }
-            this.monsters.clear();
-            this.worldList.get(this.level).findMonsters()
-                    .forEach(position -> this.monsters.add(new Monster(this, position)));
-
         } catch (LevelOutOfRangeException | Exception e) {
             System.err.println(e.getMessage());
         }
