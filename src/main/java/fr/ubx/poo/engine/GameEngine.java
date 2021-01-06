@@ -194,6 +194,7 @@ public final class GameEngine {
         while (monsterIterator.hasNext()) {
             monsterIterator.next().update(now);
         }
+
         if ( game.getWorld().isChanged() ) {
             if (this.game.update()) {
                 this.player.setPosition(this.game.getPlayer().getPosition());
