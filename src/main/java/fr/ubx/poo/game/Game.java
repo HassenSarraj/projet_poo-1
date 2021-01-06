@@ -7,6 +7,7 @@ package fr.ubx.poo.game;
 
 import fr.ubx.poo.model.decor.DoorNextOpened;
 import fr.ubx.poo.model.decor.DoorPrevOpened;
+import fr.ubx.poo.model.go.Bomb.Bomb;
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.model.go.character.Player;
 
@@ -15,15 +16,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+
 public class Game {
 
     private final List<World> worldList = new ArrayList<>();
     private final Player player;
+    private List<Bomb> bombs = new ArrayList<>() ;
     private final List<List<Monster>> monsterList = new ArrayList<>();
     private int level = 0;
     private boolean[] levelChanged = {false, false};
     public int initPlayerLives;
     public String initWorldPrefix;
+    public int initWorldLevels;
 
     public Game(String worldPath) {
         Position positionPlayer;
@@ -44,8 +48,6 @@ public class Game {
             throw new RuntimeException(e);
         }
     }
-
-    public int initWorldLevels;
 
     public int getLevel() {
         return level;
@@ -147,6 +149,10 @@ public class Game {
         return this.monsterList.get(this.level);
     }
 
+    public List<Bomb> getBombs() {
+        return bombs;
+    }
+
     public void incLevel() throws LevelOutOfRangeException {
         if (this.level < this.initWorldLevels) {
             this.level ++;
@@ -206,4 +212,5 @@ public class Game {
         this.levelChanged[1] = false;
         return test;
     }
+
 }
