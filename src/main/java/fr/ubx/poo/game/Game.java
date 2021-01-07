@@ -144,6 +144,8 @@ public class Game {
         return this.worldList.get(this.level);
     }
 
+    public World getWorld (int level) {return this.worldList.get(level) ;}
+
     public Player getPlayer() {
         return this.player;
     }
@@ -151,6 +153,8 @@ public class Game {
     public List<Monster> getMonsters() {
         return this.monsterList.get(this.level);
     }
+
+    public List<Monster> getMonsters(int level) {return this.monsterList.get(level); }
 
     public List<Bomb> getBombs() {
         return this.bombList.get(this.level);
