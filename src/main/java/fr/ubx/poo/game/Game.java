@@ -22,13 +22,14 @@ public class Game {
 
     private final List<World> worldList = new ArrayList<>();
     private final Player player;
-    private List<Bomb> bombs = new ArrayList<>() ;
+    private List<List<Bomb>> bombList = new ArrayList<>() ;
     private final List<List<Monster>> monsterList = new ArrayList<>();
     private int level = 0;
     private boolean[] levelChanged = {false, false};
     public int initPlayerLives;
     public String initWorldPrefix;
     public int initWorldLevels;
+    private boolean deadmonster ;
 
     public Game(String worldPath) {
         Position positionPlayer;
@@ -38,9 +39,11 @@ public class Game {
                 this.worldList.add(new World(this.loadLevel(i + 1, worldPath)));
             }
             for (int i = 0; i < this.initWorldLevels; i++) {
+                List<Bomb> bombs = new ArrayList<>() ;
                 List<Monster> monsters = new ArrayList<>();
                 this.worldList.get(i).findMonsters().forEach(position -> monsters.add(new Monster(this, position)));
                 this.monsterList.add(monsters);
+                this.bombList.add(bombs);
             }
             positionPlayer = worldList.get(this.level).findPlayer();
             player = new Player(this, positionPlayer);
@@ -151,7 +154,7 @@ public class Game {
     }
 
     public List<Bomb> getBombs() {
-        return bombs;
+        return this.bombList.get(this.level);
     }
 
     public void incLevel() throws LevelOutOfRangeException {
@@ -212,6 +215,15 @@ public class Game {
         this.levelChanged[0] = false;
         this.levelChanged[1] = false;
         return test;
+    }
+
+
+    public boolean isDeadmonster() {
+        return deadmonster;
+    }
+
+    public void setDeadmonster(boolean deadmonster) {
+        this.deadmonster = deadmonster;
     }
 
 }

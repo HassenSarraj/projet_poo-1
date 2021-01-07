@@ -63,10 +63,14 @@ public class Bomb extends GameObject {
             Player player = game.getPlayer();
             if (player.getPosition().equals(this.getPosition()))
                 player.setLives(player.getLives() - 1);
+            if (game.getMonsters().removeIf(monster -> monster.getPosition().equals(getPosition())))
+                game.setDeadmonster(true);
             for (Position p : positions) {
                 Decor decor = game.getWorld().get(p);
                 if (player.getPosition().equals(p))
                     player.setLives(game.getPlayer().getLives() - 1);
+                if (game.getMonsters().removeIf(monster -> monster.getPosition().equals(p)))
+                    game.setDeadmonster(true);
                 if (decor == null)
                     destroyed.add(j,false);
                 else {
@@ -75,6 +79,7 @@ public class Bomb extends GameObject {
                 }
                 j++;
             }
+
             if (range == 2) {
                 List<Position> second_positions = new ArrayList<>() ;
                 for (Direction d : dir) {
@@ -85,6 +90,8 @@ public class Bomb extends GameObject {
                     Decor decor1 = game.getWorld().get(p1);
                     if ((player.getPosition().equals(p1)) && (!destroyed.get(i)))
                         player.setLives(game.getPlayer().getLives() - 1);
+                    if (game.getMonsters().removeIf(monster -> monster.getPosition().equals(p1)))
+                        game.setDeadmonster(true);
                     if (decor1 == null)
                         ;
                     else if (!destroyed.get(i))

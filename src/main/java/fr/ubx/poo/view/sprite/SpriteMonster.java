@@ -1,5 +1,6 @@
 package fr.ubx.poo.view.sprite;
 
+import fr.ubx.poo.model.go.GameObject;
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.view.image.ImageFactory;
 import javafx.scene.image.Image;
@@ -18,4 +19,8 @@ public class SpriteMonster extends SpriteGameObject {
         setImage(ImageFactory.getInstance().getMonster(monster.getDirection()));
     }
 
+    public Monster getMonster() {
+        Monster monster = (Monster) go ;
+        return monster;
+    }
 }

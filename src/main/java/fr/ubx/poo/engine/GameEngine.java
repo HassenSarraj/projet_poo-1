@@ -12,6 +12,7 @@ import fr.ubx.poo.model.go.character.Player;
 import fr.ubx.poo.view.sprite.Sprite;
 import fr.ubx.poo.view.sprite.SpriteBomb;
 import fr.ubx.poo.view.sprite.SpriteFactory;
+import fr.ubx.poo.view.sprite.SpriteMonster;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -42,7 +43,7 @@ public final class GameEngine {
     private Input input;
     private Stage stage;
     private Sprite spritePlayer;
-    private final List<Sprite> spriteMonsters = new ArrayList<>();
+    private final List<SpriteMonster> spriteMonsters = new ArrayList<>();
     private final List<SpriteBomb> spriteBombs = new ArrayList<>();
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
@@ -155,6 +156,13 @@ public final class GameEngine {
         });
         game.getBombs().removeAll(to_remove);
         this.monsters.forEach(monster -> monster.update(now));
+        if (game.isDeadmonster()) {
+            spriteMonsters.forEach(SpriteMonster::remove);
+            spriteMonsters.clear() ;
+            for (Monster m : monsters)
+                spriteMonsters.add(SpriteFactory.createMonster(layer,m)) ;
+            game.setDeadmonster(false);
+        }
         if ( game.getWorld().isChanged() ) {
             if (this.game.update()) {
                 this.player.setPosition(this.game.getPlayer().getPosition());
