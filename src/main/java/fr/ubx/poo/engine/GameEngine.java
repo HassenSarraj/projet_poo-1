@@ -12,6 +12,7 @@ import fr.ubx.poo.model.go.character.Player;
 import fr.ubx.poo.view.sprite.Sprite;
 import fr.ubx.poo.view.sprite.SpriteBomb;
 import fr.ubx.poo.view.sprite.SpriteFactory;
+import fr.ubx.poo.view.sprite.SpriteMonster;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -42,7 +43,7 @@ public final class GameEngine {
     private Input input;
     private Stage stage;
     private Sprite spritePlayer;
-    private final List<Sprite> spriteMonsters = new ArrayList<>();
+    private final List<SpriteMonster> spriteMonsters = new ArrayList<>();
     private final List<SpriteBomb> spriteBombs = new ArrayList<>();
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
@@ -144,7 +145,7 @@ public final class GameEngine {
 
     private void updateWindow() {
         this.spritePlayer.remove();
-        Iterator<Sprite> monsterIterator = this.spriteMonsters.iterator();
+        Iterator<SpriteMonster> monsterIterator = this.spriteMonsters.iterator();
         while (monsterIterator.hasNext()) {
             monsterIterator.next().remove();
         }
@@ -171,7 +172,6 @@ public final class GameEngine {
         root.getChildren().add(layer);
 
         // Create decor sprites
-        this.spritePlayer = SpriteFactory.createPlayer(this.layer, this.player);
         this.game.getWorld().forEach(
                 (position, decor) -> this.sprites.add(SpriteFactory.createDecor(this.layer, position, decor)));
         for (Monster m : this.monsters)
@@ -180,21 +180,25 @@ public final class GameEngine {
 
     private void update(long now) {
         player.update(now);
-        List<Bomb> to_remove = new ArrayList<>();
-        game.getBombs().forEach(b -> {
-            b.update(now);
-            if (b.isBomb_is_set())
-                spriteBombs.add(SpriteFactory.createBomb(layer,b));
-            else {
-                to_remove.add(b);
+        for (int i = 0 ; i < game.initWorldLevels ; i++) {
+            Iterator<Bomb> bombIterator = game.getAllBombs().get(i).iterator();
+            while (bombIterator.hasNext()){
+                bombIterator.next().update(now);
             }
-        });
-        game.getBombs().removeAll(to_remove);
+        }
+        List<Bomb> to_remove = new ArrayList<>();
         Iterator<Monster> monsterIterator = this.monsters.iterator();
         while (monsterIterator.hasNext()) {
             monsterIterator.next().update(now);
         }
-
+        if (game.isDeadmonster()) {
+            spriteMonsters.forEach(SpriteMonster::remove);
+            this.spriteMonsters.clear();
+            monsters = game.getMonsters() ;
+            for (Monster m : monsters)
+                spriteMonsters.add(SpriteFactory.createMonster(layer,m));
+            game.setDeadmonster(false);
+        }
         if ( game.getWorld().isChanged() ) {
             if (this.game.update()) {
                 this.player.setPosition(this.game.getPlayer().getPosition());
@@ -207,6 +211,15 @@ public final class GameEngine {
                 game.getWorld().setChanged(false);
             }
         }
+        game.getBombs().forEach(b -> {
+            if (b.isBomb_is_set() && (b.getLevel() == game.getLevel())) {
+                spriteBombs.add(SpriteFactory.createBomb(layer, b));
+            }
+            else {
+                to_remove.add(b);
+            }
+        });
+        game.getBombs().removeAll(to_remove);
         if (!player.isAlive()) {
             gameLoop.stop();
             showMessage("Perdu!", Color.RED);
