@@ -155,7 +155,11 @@ public final class GameEngine {
             spriteIterator.next().remove();
         }
         this.sprites.clear();
-
+        Iterator<SpriteBomb> bombIterator = this.spriteBombs.iterator();
+        while (bombIterator.hasNext()) {
+            bombIterator.next().remove();
+        }
+        this.spriteBombs.clear();
         Group root = new Group();
 
         int height = game.getWorld().dimension.height;
@@ -199,12 +203,13 @@ public final class GameEngine {
                 spriteMonsters.add(SpriteFactory.createMonster(layer,m));
             game.setDeadmonster(false);
         }
-        if ( game.getWorld().isChanged() ) {
+        if (game.getWorld().isChanged()) {
             if (this.game.update()) {
                 this.player.setPosition(this.game.getPlayer().getPosition());
                 this.monsters = this.game.getMonsters();
                 this.updateWindow();
-            } else {
+            }
+            else {
                 sprites.forEach(Sprite::remove);
                 sprites.clear();
                 game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
