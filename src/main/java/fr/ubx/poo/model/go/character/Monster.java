@@ -47,12 +47,12 @@ public class Monster extends GameObject implements Movable {
             if (decor != null) {
                 return decor.canWalkOn(this);
             } else {
+                for ( Bomb b : game.getBombs()) {
+                    if (b.getPosition().equals(newPositon))
+                        return false;
+                }
                 for (Monster monster : this.game.getMonsters()) {
                     if (monster.getPosition().equals(newPositon)) return false;
-                    for ( Bomb b : game.getBombs()) {
-                        if (b.getPosition().equals(newPositon))
-                            return false;
-                    }
                 }
                 return true;
             }
