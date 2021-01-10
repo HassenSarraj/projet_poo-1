@@ -7,7 +7,7 @@ import fr.ubx.poo.model.go.character.Player;
 
 public abstract class Entity {
     public abstract boolean canWalkOn (Player player) ;
-
+  
     /**
      * @param monster object monster
      * @return true if monster can walk n

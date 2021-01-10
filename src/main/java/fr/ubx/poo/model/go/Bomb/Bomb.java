@@ -30,7 +30,6 @@ public class Bomb extends GameObject {
         state = State.BOMB4;
         this.range = range ;
         this.level = game.getLevel();
-
         game.getPlayer().setNumberofBombs(game.getPlayer().getNumberofBombs() - 1);
     }
 

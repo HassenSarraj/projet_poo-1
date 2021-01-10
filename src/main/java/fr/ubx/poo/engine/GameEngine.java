@@ -165,7 +165,6 @@ public final class GameEngine {
             bombIterator.next().remove();
         }
         this.spriteBombs.clear();
-
         this.initialize(this.stage, this.game);
     }
 
