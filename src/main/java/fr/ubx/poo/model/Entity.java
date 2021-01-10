@@ -6,6 +6,10 @@ import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.model.go.character.Player;
 
 public abstract class Entity {
+    /**
+     * @param player object monster
+     * @return true if monster can walk n
+     */
     public abstract boolean canWalkOn (Player player) ;
   
     /**
@@ -13,5 +17,11 @@ public abstract class Entity {
      * @return true if monster can walk n
      */
     public abstract boolean canWalkOn (Monster monster) ;
+    /**
+     * handles the effects of a player walking on a Entity
+     * @param player
+     * @param game
+     * @param pos
+     */
     public abstract void action (Player player, Game game, Position pos) ;
 }

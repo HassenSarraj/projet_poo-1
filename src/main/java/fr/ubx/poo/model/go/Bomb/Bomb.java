@@ -42,6 +42,12 @@ public class Bomb extends GameObject {
 
     public void action (Player Player,Game game,Position pos){}
 
+    /**
+     * updates the state of the bomb according to the time
+     * if the bomb reaches explosion state , handles the consequences on the
+     * player , monsters and destructible decor elements
+     * @param now : time life of the program
+     */
     public void update (long now) {
         long duration = now - timer ;
         double dur = duration / Math.pow(10,9) ;

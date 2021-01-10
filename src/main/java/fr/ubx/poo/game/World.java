@@ -35,6 +35,11 @@ public class World {
         throw new PositionNotFoundException("Player");
     }
 
+    /**
+     *
+     * @return List of monsters positions in World
+     */
+
     public List<Position> findMonsters() {
         List<Position> l = new ArrayList<>() ;
         for (int x = 0 ; x < dimension.width; x++) {

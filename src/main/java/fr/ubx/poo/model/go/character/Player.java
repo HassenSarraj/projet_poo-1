@@ -52,10 +52,24 @@ public class Player extends GameObject implements Movable {
         moveRequested = true;
     }
 
+    /**
+     * A bomb is set if two conditions are met :
+     * The number of bombs in the player's posession is greater than 0
+     * there is no Bomb in the player's current position
+     *
+     * @param now time life of the program
+     */
     public void requestBomb(long now) {
         if (numberofBombs > 0) {
-            Bomb bomb = new Bomb(game, this.getPosition(), now, Bombrange);
-            game.getBombs().add(bomb);
+            boolean exists = false;
+            for (Bomb b : game.getBombs()) {
+                if (b.getPosition().equals(this.getPosition()))
+                    exists = true;
+            }
+            if (!exists) {
+                Bomb bomb = new Bomb(game, this.getPosition(), now, Bombrange);
+                game.getBombs().add(bomb);
+            }
         }
     }
 
@@ -75,6 +89,13 @@ public class Player extends GameObject implements Movable {
         }
     }
 
+    /**
+     *  Player can move if no decor elements or bombs are in the next position
+     *  or if there is a Box in the next position that meets the conditions for being moved
+     *
+     * @param direction : direction of the move
+     * @return true if player can move in the given direction
+     */
     @Override
     public boolean canMove(Direction direction) {
         Position nextpos = direction.nextPosition(getPosition());
@@ -112,6 +133,11 @@ public class Player extends GameObject implements Movable {
         return false;
     }
 
+    /**
+     * move the player if possible or move both the player and the box if there
+     * is a box to be moved
+     * @param direction : direction of the move
+     */
     public void doMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
         List<Monster> monsters = game.getMonsters() ;

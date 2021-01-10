@@ -5,6 +5,7 @@ import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.model.Movable;
 import fr.ubx.poo.model.decor.Decor;
+import fr.ubx.poo.model.go.Bomb.Bomb;
 import fr.ubx.poo.model.go.GameObject;
 
 public class Monster extends GameObject implements Movable {
@@ -48,6 +49,10 @@ public class Monster extends GameObject implements Movable {
             } else {
                 for (Monster monster : this.game.getMonsters()) {
                     if (monster.getPosition().equals(newPositon)) return false;
+                    for ( Bomb b : game.getBombs()) {
+                        if (b.getPosition().equals(newPositon))
+                            return false;
+                    }
                 }
                 return true;
             }

@@ -188,6 +188,12 @@ public class Game {
         return this.monsterList.get(level);
     }
 
+    /**
+     * Custom getter for List bombList
+     *
+     * @return bomb List corresponding to the current level.
+     */
+
     public List<Bomb> getBombs() {
         return this.bombList.get(this.level);
     }
