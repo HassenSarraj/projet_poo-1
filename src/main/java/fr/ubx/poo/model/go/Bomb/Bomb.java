@@ -20,6 +20,7 @@ public class Bomb extends GameObject {
     public State state ;
     public int range ;
     private int level ;
+
     public boolean bomb_has_exploded ;
 
     public Bomb(Game game, Position position,long now,int range) {
@@ -36,9 +37,17 @@ public class Bomb extends GameObject {
     public boolean canWalkOn(Player player) {
         return false ;
     }
+
     public boolean canWalkOn (Monster monster) {return false ;}
+
     public void action (Player Player,Game game,Position pos){}
 
+    /**
+     * updates the state of the bomb according to the time
+     * if the bomb reaches explosion state , handles the consequences on the
+     * player , monsters and destructible decor elements
+     * @param now : time life of the program
+     */
     public void update (long now) {
         long duration = now - timer ;
         double dur = duration / Math.pow(10,9) ;
@@ -136,6 +145,4 @@ public class Bomb extends GameObject {
     public int getLevel() {
         return level;
     }
-
-
 }

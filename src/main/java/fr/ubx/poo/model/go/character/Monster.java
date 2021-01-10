@@ -5,8 +5,6 @@ import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.model.Movable;
 import fr.ubx.poo.model.decor.Decor;
-import fr.ubx.poo.model.decor.DoorNextOpened;
-import fr.ubx.poo.model.decor.DoorPrevOpened;
 import fr.ubx.poo.model.go.Bomb.Bomb;
 import fr.ubx.poo.model.go.GameObject;
 
@@ -23,7 +21,6 @@ public class Monster extends GameObject implements Movable {
     @Override
     public boolean canWalkOn(Player player) {
         return true;
-
     }
 
     public void action (Player player, Game game, Position pos){
@@ -34,22 +31,31 @@ public class Monster extends GameObject implements Movable {
         return direction;
     }
 
+    /**
+     * Monster can move if the next position contain nothing or
+     * decor wich canMove method return true, in otherwhise monster
+     * cant move.
+     *
+     * @param direction direction of move
+     * @return true when monster can move
+     */
     @Override
     public boolean canMove(Direction direction) {
         Position newPositon = direction.nextPosition(getPosition());
         if (newPositon.inside(this.game.getWorld().dimension)) {
             Decor decor = this.game.getWorld().get(newPositon);
-            for ( Bomb b : game.getBombs()) {
-                if (b.getPosition().equals(newPositon))
-                    return false;
-            }
-            if (this.game.getMonsters().contains(new Monster(this.game, newPositon))) {
-                    return false;
-            } else if (decor == null) {
+            if (decor != null) {
+                return decor.canWalkOn(this);
+            } else {
+                for (Monster monster : this.game.getMonsters()) {
+                    if (monster.getPosition().equals(newPositon)) return false;
+                    for ( Bomb b : game.getBombs()) {
+                        if (b.getPosition().equals(newPositon))
+                            return false;
+                    }
+                }
                 return true;
-            } else return decor.canWalkOn(this.game.getPlayer())
-                    && !(decor instanceof DoorPrevOpened)
-                    && !(decor instanceof DoorNextOpened);
+            }
         }
         return false;
     }
@@ -62,6 +68,12 @@ public class Monster extends GameObject implements Movable {
         }
     }
 
+    /**
+     * Monster move every x seconds. Timer is divided by the current level
+     * + 1.
+     *
+     * @param now time life of the program
+     */
     public void update(long now) {
         if (this.canMove(Direction.S) ||
                 this.canMove(Direction.N) ||

@@ -38,6 +38,11 @@ public abstract class GameObject extends Entity {
     public boolean canWalkOn(Monster monster) {
         return false;
     }
-
-    public void action (Player Player, Game game, Position pos){}
+    /**
+     * handles the effects of a player walking on a GameObject type element
+     * @param player
+     * @param game
+     * @param pos
+     */
+    public void action (Player player, Game game, Position pos){}
 }
