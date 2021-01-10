@@ -143,6 +143,11 @@ public final class GameEngine {
         }.start();
     }
 
+
+    /**
+     * Update window when level changed. Remove all sprite and call
+     * initialize method.
+     */
     private void updateWindow() {
         this.spritePlayer.remove();
         Iterator<SpriteMonster> monsterIterator = this.spriteMonsters.iterator();
@@ -160,26 +165,7 @@ public final class GameEngine {
             bombIterator.next().remove();
         }
         this.spriteBombs.clear();
-        Group root = new Group();
-
-        int height = game.getWorld().dimension.height;
-        int width = game.getWorld().dimension.width;
-        int sceneWidth = width * Sprite.size;
-        int sceneHeight = height * Sprite.size;
-        Scene scene = new Scene(root, sceneWidth, sceneHeight + StatusBar.height);
-        scene.getStylesheets().add(getClass().getResource("/css/application.css").toExternalForm());
-        this.stage.setTitle(windowTitle);
-        this.stage.setScene(scene);
-        this.stage.show();
-        input = new Input(scene);
-        this.statusBar = new StatusBar(root, sceneWidth, sceneHeight, this.game);
-        root.getChildren().add(layer);
-
-        // Create decor sprites
-        this.game.getWorld().forEach(
-                (position, decor) -> this.sprites.add(SpriteFactory.createDecor(this.layer, position, decor)));
-        for (Monster m : this.monsters)
-            this.spriteMonsters.add(SpriteFactory.createMonster(this.layer,m)) ;
+        this.initialize(this.stage, this.game);
     }
 
     private void update(long now) {
@@ -208,8 +194,7 @@ public final class GameEngine {
                 this.player.setPosition(this.game.getPlayer().getPosition());
                 this.monsters = this.game.getMonsters();
                 this.updateWindow();
-            }
-            else {
+            } else {
                 sprites.forEach(Sprite::remove);
                 sprites.clear();
                 game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
