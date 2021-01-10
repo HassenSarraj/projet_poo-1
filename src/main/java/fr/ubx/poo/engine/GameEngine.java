@@ -143,6 +143,7 @@ public final class GameEngine {
         }.start();
     }
 
+
     /**
      * Update window when level changed. Remove all sprite and call
      * initialize method.
@@ -194,8 +195,7 @@ public final class GameEngine {
                 this.player.setPosition(this.game.getPlayer().getPosition());
                 this.monsters = this.game.getMonsters();
                 this.updateWindow();
-            }
-            else {
+            } else {
                 sprites.forEach(Sprite::remove);
                 sprites.clear();
                 game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));

@@ -23,7 +23,6 @@ public class Monster extends GameObject implements Movable {
     @Override
     public boolean canWalkOn(Player player) {
         return true;
-
     }
 
     public void action (Player player, Game game, Position pos){
@@ -39,17 +38,14 @@ public class Monster extends GameObject implements Movable {
         Position newPositon = direction.nextPosition(getPosition());
         if (newPositon.inside(this.game.getWorld().dimension)) {
             Decor decor = this.game.getWorld().get(newPositon);
-            for ( Bomb b : game.getBombs()) {
-                if (b.getPosition().equals(newPositon))
-                    return false;
-            }
-            if (this.game.getMonsters().contains(new Monster(this.game, newPositon))) {
-                    return false;
-            } else if (decor == null) {
+            if (decor != null) {
+                return decor.canWalkOn(this);
+            } else {
+                for (Monster monster : this.game.getMonsters()) {
+                    if (monster.getPosition().equals(newPositon)) return false;
+                }
                 return true;
-            } else return decor.canWalkOn(this.game.getPlayer())
-                    && !(decor instanceof DoorPrevOpened)
-                    && !(decor instanceof DoorNextOpened);
+            }
         }
         return false;
     }

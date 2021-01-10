@@ -20,6 +20,7 @@ public class Bomb extends GameObject {
     public State state ;
     public int range ;
     private int level ;
+
     public boolean bomb_has_exploded ;
 
     public Bomb(Game game, Position position,long now,int range) {
@@ -29,6 +30,7 @@ public class Bomb extends GameObject {
         state = State.BOMB4;
         this.range = range ;
         this.level = game.getLevel();
+
         game.getPlayer().setNumberofBombs(game.getPlayer().getNumberofBombs() - 1);
     }
 
@@ -36,7 +38,9 @@ public class Bomb extends GameObject {
     public boolean canWalkOn(Player player) {
         return false ;
     }
+
     public boolean canWalkOn (Monster monster) {return false ;}
+
     public void action (Player Player,Game game,Position pos){}
 
     public void update (long now) {
@@ -136,6 +140,4 @@ public class Bomb extends GameObject {
     public int getLevel() {
         return level;
     }
-
-
 }

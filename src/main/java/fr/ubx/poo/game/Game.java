@@ -286,5 +286,4 @@ public class Game {
     public void setDeadmonster(boolean deadmonster) {
         this.deadmonster = deadmonster;
     }
-
 }
