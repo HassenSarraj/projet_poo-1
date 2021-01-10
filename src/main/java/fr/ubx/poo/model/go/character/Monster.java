@@ -62,6 +62,12 @@ public class Monster extends GameObject implements Movable {
         }
     }
 
+    /**
+     * Monster move every x seconds. Timer is divided by the current level
+     * + 1.
+     *
+     * @param now time life of the program
+     */
     public void update(long now) {
         if (this.canMove(Direction.S) ||
                 this.canMove(Direction.N) ||
